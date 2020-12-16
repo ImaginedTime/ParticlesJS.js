@@ -84,7 +84,9 @@
     ```javascript
     Particles.init({
     selector: ".cv",
-    connectParticles: true
+    connectParticles: true,
+    opacity: "random",
+    fullScreen: true
     });
     
 ## Elements :-
