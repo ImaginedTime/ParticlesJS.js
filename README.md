@@ -107,5 +107,5 @@ shape             | object                     | optional  | false | The shape o
 *shape.length*    | integer                    | shape => mandatory  | 20 | The length for the shape of the particles
 image             | object                     | optional  | false | The image to be drawn instead of the particles
 *image.src*       | string(path to the image)  | image => mandatory | The src for the image to be drawn
-*image.sizeX*     | integer                    | optional  | image size | The size for the image in the X direction
-*image.sizeY*     | integer                    | optional  | image size | The size for the image in the Y direction
+*image.sizeX*     | integer                    | image => mandatory  | image size | The size for the image in the X direction
+*image.sizeY*     | integer                    | image => mandatory  | image size | The size for the image in the Y direction
