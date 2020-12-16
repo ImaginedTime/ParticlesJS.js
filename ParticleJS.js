@@ -8,12 +8,12 @@ const Particles = {
 
 		Variables.maxP = props.maxParticles || 100;
 		Variables.minD = props.minDistance || 120;
-		Variables.color = props.color || "#000";
+		Variables.color = props.color || "rgb(0,0,0)";
 		Variables.speed = props.speed || 0.5;
 		Variables.sizeV = props.sizeVariation || 3;
 		Variables.connectP = props.connectParticles || false;
 		Variables.opacity = props.opacity || 0.7;
-		Variables.background = props.background || "white";
+		Variables.background = props.background || "rgb(255,255,255)";
 		Variables.fullScreen = props.fullScreen || false;
 		Variables.screenSize = props.screenSize || (Variables.fullScreen ? null : {width: 200, height: 200});
 		Variables.mouseCollide = props.mouseCollide || false;
