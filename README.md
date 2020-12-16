@@ -31,7 +31,7 @@
   ## Usage :-
   #### Add a canvas element
   ```html
-  <canvas id="cv></canvas>
+  <canvas id="cv" ></canvas>
   ```
   
   #### Add some styling to the canvas and the page
