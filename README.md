@@ -104,7 +104,7 @@ mouseCollide      | boolean                    | opitonal  | false | To let the 
 mouseCollideRange | integer                    | optional  | 100 | The range for collision with the mouse 
 shape             | object                     | optional  | false | The shape of the particles to be drawn
 *shape.name*      | string - "circles","pentagons","hexagons","5-stars","6-stars","unknown","unknown2"| shape => mandatory | "particles" | The name of the shape of the particles
-*shape.length*    | integer                    | optional  | 20 | The length for the shape of the particles
+*shape.length*    | integer                    | shape => mandatory  | 20 | The length for the shape of the particles
 image             | object                     | optional  | false | The image to be drawn instead of the particles
 *image.src*       | string(path to the image)  | image => mandatory | The src for the image to be drawn
 *image.sizeX*     | integer                    | optional  | image size | The size for the image in the X direction
