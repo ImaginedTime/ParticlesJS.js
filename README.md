@@ -1,6 +1,6 @@
 # ParticlesJS.js
 
-### A lightweight library to simulte particles for beautiful backgrounds.
+### A lightweight library to simulate particles for beautiful backgrounds.
 
 ## Installation :-
 ##### Download the file from github and put it in the folder you want to use in.
