@@ -57,13 +57,8 @@
   ```javascript
   Particles.init({
 			selector: "class or id of the last canvas",
-			connectParticles: true,
-			maxParticles: 150,
-			minDistance: 120,
-			speed: 0.5,
 			color: "rgb(200,200,200)",
 			background: "rgb(182,25,36)",
-			sizeVariation: 5,
 			opacity: "random",
 			fullScreen: true,
 			mouseCollide: true,
@@ -84,7 +79,6 @@
     ```javascript
     Particles.init({
     selector: ".cv",
-    connectParticles: true,
     opacity: "random",
     fullScreen: true
     });
@@ -93,13 +87,13 @@
 Element           | Type                       | Required  | Default   | For
 ------------------|----------------------------|-----------|-----------|------------------------------------------------------------
 selector          | string(id or class of the last canvas element on your page)| mandatory |           | To apply styles on that canvas
-connnectParticles | boolean                    | optional  | false     | To connect the floating particles
-maxParticles      | integer                    | optional  | 100       | The number of particles to be drawn
+connnectParticles | boolean                    | optional  | true     | To connect the floating particles
+maxParticles      | integer                    | optional  | 200       | The number of particles to be drawn
 minDistance       | integer                    | optional  | 120       | The minDistance to connect the lines 
 speed             | float                      | optional  | 0.5       | The speed of animation
 color             | string("rgb(r,g,b)" only ) | optional  | "rbg(0,0,0)" | The color of the particles and the lines
 background        | string("rgb(r,g,b)" only ) | optional  | "rgb(255,255,255)" | The background of the canvas
-sizeVariation     | integer                    | optional  | 3 | For the size variation among the particles
+sizeVariation     | integer                    | optional  | 5 | For the size variation among the particles
 opacity           | float / "random"           | optional  | 0.7 | To change the opacity of the particles and the lines 
 fullScreen        | boolean                    | optional  | false | To let the canvas take the full Screen Width
 mouseCollide      | boolean                    | opitonal  | false | To let the particles collide with the cursor when moved
