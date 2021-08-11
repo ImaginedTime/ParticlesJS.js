@@ -6,14 +6,14 @@ const Particles = {
 		Variables.cv = tempCnvses[tempCnvses.length - 1];
 		Variables.ct = Variables.cv.getContext("2d");
 
-		Variables.maxP = props.maxParticles || 100;
+		Variables.maxP = props.maxParticles || 200;
 		Variables.minD = props.minDistance || 120;
-		Variables.color = props.color || "rgb(0,0,0)";
+		Variables.color = props.color || "#000";
 		Variables.speed = props.speed || 0.5;
-		Variables.sizeV = props.sizeVariation || 3;
-		Variables.connectP = props.connectParticles || false;
+		Variables.sizeV = props.sizeVariation || 5;
+		Variables.connectP = props.connectParticles || true;
 		Variables.opacity = props.opacity || 0.7;
-		Variables.background = props.background || "rgb(255,255,255)";
+		Variables.background = props.background || "white";
 		Variables.fullScreen = props.fullScreen || false;
 		Variables.screenSize = props.screenSize || (Variables.fullScreen ? null : {width: 200, height: 200});
 		Variables.mouseCollide = props.mouseCollide || false;
@@ -45,7 +45,6 @@ const Particles = {
 			Variables.imageDraw = new Image();
 			Variables.imageDraw.src = Variables.image.src;
 		}
-
 		setInterval(Particles.update, 20, Variables, PosList, DirList, SizeList);
 	},
 
@@ -195,16 +194,16 @@ const Particles = {
 			Variables.ct.beginPath();
 			let l = Variables.shape.length || 20;
 			let s = l / Math.sqrt(3);
-			Variables.ct.moveTo(PosList[i].x, PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x + l - s, PosList[i].y - l/2);
-			Variables.ct.lineTo(PosList[i].x + l, PosList[i].y - l/3);
-			Variables.ct.lineTo(PosList[i].x + l - s/2, PosList[i].y + l/4);
-			Variables.ct.lineTo(PosList[i].x + 2*l/3, PosList[i].y + 4*l/5);
-			Variables.ct.lineTo(PosList[i].x, PosList[i].y + l/2);
-			Variables.ct.lineTo(PosList[i].x - 2*l/3, PosList[i].y + 4*l/5);
-			Variables.ct.lineTo(PosList[i].x -l + s/2, PosList[i].y + l/4);
-			Variables.ct.lineTo(PosList[i].x - l, PosList[i].y - l/3);
-			Variables.ct.lineTo(PosList[i].x - l + s, PosList[i].y - l/2);
+			Variables.ct.moveTo(PosList[i].x           , PosList[i].y - l);
+			Variables.ct.lineTo(PosList[i].x + l - s   , PosList[i].y - l/2);
+			Variables.ct.lineTo(PosList[i].x + l       , PosList[i].y - l/3);
+			Variables.ct.lineTo(PosList[i].x + l - s/2 , PosList[i].y + l/4);
+			Variables.ct.lineTo(PosList[i].x + 2*l/3   , PosList[i].y + 4*l/5);
+			Variables.ct.lineTo(PosList[i].x           , PosList[i].y + l/2);
+			Variables.ct.lineTo(PosList[i].x - 2*l/3   , PosList[i].y + 4*l/5);
+			Variables.ct.lineTo(PosList[i].x -l + s/2  , PosList[i].y + l/4);
+			Variables.ct.lineTo(PosList[i].x - l       , PosList[i].y - l/3);
+			Variables.ct.lineTo(PosList[i].x - l + s   , PosList[i].y - l/2);
 			Variables.ct.closePath();
 			Variables.ct.fill();
 		}
@@ -212,12 +211,12 @@ const Particles = {
 		{
 			Variables.ct.beginPath();
 			let r = 2 * Variables.shape.length / Math.sqrt(3) || 20 / Math.sqrt(3);
-			Variables.ct.moveTo(PosList[i].x - r, PosList[i].y);
-			Variables.ct.lineTo(PosList[i].x - r/2, PosList[i].y - r);
-			Variables.ct.lineTo(PosList[i].x + r/2, PosList[i].y - r);
-			Variables.ct.lineTo(PosList[i].x + r, PosList[i].y);
-			Variables.ct.lineTo(PosList[i].x + r/2, PosList[i].y + r);
-			Variables.ct.lineTo(PosList[i].x - r/2, PosList[i].y + r);
+			Variables.ct.moveTo(PosList[i].x - r   , PosList[i].y);
+			Variables.ct.lineTo(PosList[i].x - r/2 , PosList[i].y - r);
+			Variables.ct.lineTo(PosList[i].x + r/2 , PosList[i].y - r);
+			Variables.ct.lineTo(PosList[i].x + r   , PosList[i].y);
+			Variables.ct.lineTo(PosList[i].x + r/2 , PosList[i].y + r);
+			Variables.ct.lineTo(PosList[i].x - r/2 , PosList[i].y + r);
 			Variables.ct.closePath();
 			Variables.ct.fill();
 		}
@@ -225,11 +224,11 @@ const Particles = {
 		{
 			Variables.ct.beginPath();
 			let l = Variables.shape.length || 20;
-			Variables.ct.moveTo(PosList[i].x, PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x + l*Math.sqrt(3)/2, PosList[i].y - l/2);
-			Variables.ct.lineTo(PosList[i].x + l/2, PosList[i].y + l/2);
-			Variables.ct.lineTo(PosList[i].x - l/2, PosList[i].y + l/2);
-			Variables.ct.lineTo(PosList[i].x - l*Math.sqrt(3)/2, PosList[i].y - l/2);
+			Variables.ct.moveTo(PosList[i].x                    , PosList[i].y - l);
+			Variables.ct.lineTo(PosList[i].x + l*Math.sqrt(3)/2 , PosList[i].y - l/2);
+			Variables.ct.lineTo(PosList[i].x + l/2              , PosList[i].y + l/2);
+			Variables.ct.lineTo(PosList[i].x - l/2              , PosList[i].y + l/2);
+			Variables.ct.lineTo(PosList[i].x - l*Math.sqrt(3)/2 , PosList[i].y - l/2);
 			Variables.ct.closePath();
 			Variables.ct.fill();
 		}
@@ -246,16 +245,16 @@ const Particles = {
 			let ps = 2 * sr/2 * 0.5877852523;
 			let s = Math.sqrt(4 * sr*sr + ps*ps) / 2;
 			let h = Math.sqrt(sr*sr / 2 - ps*ps) / 2;
-			Variables.ct.moveTo(PosList[i].x, PosList[i].y - 3*sr/2);
-			Variables.ct.lineTo(PosList[i].x - sr/3, PosList[i].y - sr/2);
-			Variables.ct.lineTo(PosList[i].x - sr/3 + s, PosList[i].y + sr/2);
-			Variables.ct.lineTo(PosList[i].x - s + sr/6, PosList[i].y - sr/2 + h);
-			Variables.ct.lineTo(PosList[i].x - s/2 + sr/6, PosList[i].y - sr/2 + 2*h);
-			Variables.ct.lineTo(PosList[i].x, PosList[i].y - 3*sr/2 + 2*h);
-			Variables.ct.lineTo(PosList[i].x + s/2 - sr/6, PosList[i].y - sr/2 + 2*h);
-			Variables.ct.lineTo(PosList[i].x + s - sr/6, PosList[i].y - sr/2 + h);
-			Variables.ct.lineTo(PosList[i].x + sr/3 - s, PosList[i].y + sr/2);
-			Variables.ct.lineTo(PosList[i].x + sr/3, PosList[i].y - sr/2);
+			Variables.ct.moveTo(PosList[i].x              , PosList[i].y - 3*sr/2);
+			Variables.ct.lineTo(PosList[i].x - sr/3       , PosList[i].y - sr/2);
+			Variables.ct.lineTo(PosList[i].x - sr/3 + s   , PosList[i].y + sr/2);
+			Variables.ct.lineTo(PosList[i].x - s + sr/6   , PosList[i].y - sr/2 + h);
+			Variables.ct.lineTo(PosList[i].x - s/2 + sr/6 , PosList[i].y - sr/2 + 2*h);
+			Variables.ct.lineTo(PosList[i].x              , PosList[i].y - 3*sr/2 + 2*h);
+			Variables.ct.lineTo(PosList[i].x + s/2 - sr/6 , PosList[i].y - sr/2 + 2*h);
+			Variables.ct.lineTo(PosList[i].x + s - sr/6   , PosList[i].y - sr/2 + h);
+			Variables.ct.lineTo(PosList[i].x + sr/3 - s   , PosList[i].y + sr/2);
+			Variables.ct.lineTo(PosList[i].x + sr/3       , PosList[i].y - sr/2);
 			Variables.ct.closePath();
 			Variables.ct.fill();
 		}
@@ -264,16 +263,16 @@ const Particles = {
 			Variables.ct.beginPath();
 			let l = Variables.shape.length || 20;
 			let s = l / Math.sqrt(3);
-			Variables.ct.moveTo(PosList[i].x, PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x + l - s, PosList[i].y - l + s);
-			Variables.ct.lineTo(PosList[i].x + l, PosList[i].y - l + s);
-			Variables.ct.lineTo(PosList[i].x + l - s/2, PosList[i].y + l - s);
-			Variables.ct.lineTo(PosList[i].x + l, PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x, PosList[i].y - l/2);
-			Variables.ct.lineTo(PosList[i].x - l, PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x -l + s/2, PosList[i].y + l - s);
-			Variables.ct.lineTo(PosList[i].x - l, PosList[i].y - l + s);
-			Variables.ct.lineTo(PosList[i].x - l + s, PosList[i].y - l + s);
+			Variables.ct.moveTo(PosList[i].x           , PosList[i].y - l);
+			Variables.ct.lineTo(PosList[i].x + l - s   , PosList[i].y - l + s);
+			Variables.ct.lineTo(PosList[i].x + l       , PosList[i].y - l + s);
+			Variables.ct.lineTo(PosList[i].x + l - s/2 , PosList[i].y + l - s);
+			Variables.ct.lineTo(PosList[i].x + l       , PosList[i].y - l);
+			Variables.ct.lineTo(PosList[i].x           , PosList[i].y - l/2);
+			Variables.ct.lineTo(PosList[i].x - l       , PosList[i].y - l);
+			Variables.ct.lineTo(PosList[i].x -l + s/2  , PosList[i].y + l - s);
+			Variables.ct.lineTo(PosList[i].x - l       , PosList[i].y - l + s);
+			Variables.ct.lineTo(PosList[i].x - l + s   , PosList[i].y - l + s);
 			Variables.ct.closePath();
 			Variables.ct.fill();
 		}
