@@ -4,7 +4,7 @@
 A sample implementation is given [here](https://particleJS-uday.web.app)
 
 ## Installation :-
-##### Download the file from github and put it in the folder you want to use in.
+##### Clone the repo or Download the file from github and put it in the folder you want to use in.
 
 ## Features :-
 * Simulate in background :- 
