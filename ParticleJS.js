@@ -180,38 +180,101 @@ const Particles = {
         );
     },
     drawShapes: (particleSystem, positions, sizes, index) => {
-        const shape = particleSystem.shape;
-
-        if (shape.name === "6-stars") {
+        if (particleSystem.shape.name == "6-stars") {
             particleSystem.context.beginPath();
-            let h = shape.length / 2 || 10;
+            let h = particleSystem.shape.length / 2 || 10;
             particleSystem.context.moveTo(positions[index].x, positions[index].y - 2 * h);
-            particleSystem.context.lineTo(positions[index].x + (2 * h) / 3, positions[index].y - h);
-            // ... (remaining lines for the star shape)
+            particleSystem.context.lineTo(positions[index].x + 2 * h / 3, positions[index].y - h);
+            particleSystem.context.lineTo(positions[index].x + 2 * h, positions[index].y - h);
+            particleSystem.context.lineTo(positions[index].x + 4 * h / 3, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x + 2 * h, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x + 2 * h / 3, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y + 2 * h);
+            particleSystem.context.lineTo(positions[index].x - 2 * h / 3, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x - 2 * h, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x - 4 * h / 3, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x - 2 * h, positions[index].y - h);
+            particleSystem.context.lineTo(positions[index].x - 2 * h / 3, positions[index].y - h);
             particleSystem.context.closePath();
             particleSystem.context.fill();
-        } else if (shape.name === "5-stars") {
-            // Handle drawing for 5-stars shape
-        } else if (shape.name === "hexagons") {
-            // Handle drawing for hexagons shape
-        } else if (shape.name === "pentagons") {
-            // Handle drawing for pentagons shape
-        } else if (shape.name === "circles") {
-            // Handle drawing for circles shape
-        } else if (shape.name === "unknown") {
-            // Handle drawing for unknown shape
-        } else if (shape.name === "unknown2") {
-            // Handle drawing for unknown2 shape
+        } else if (particleSystem.shape.name == "5-stars") {
+            particleSystem.context.beginPath();
+            let l = particleSystem.shape.length || 20;
+            let s = l / Math.sqrt(3);
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x + l - s, positions[index].y - l / 2);
+            particleSystem.context.lineTo(positions[index].x + l, positions[index].y - l / 3);
+            particleSystem.context.lineTo(positions[index].x + l - s / 2, positions[index].y + l / 4);
+            particleSystem.context.lineTo(positions[index].x + 2 * l / 3, positions[index].y + 4 * l / 5);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y + l / 2);
+            particleSystem.context.lineTo(positions[index].x - 2 * l / 3, positions[index].y + 4 * l / 5);
+            particleSystem.context.lineTo(positions[index].x - l + s / 2, positions[index].y + l / 4);
+            particleSystem.context.lineTo(positions[index].x - l, positions[index].y - l / 3);
+            particleSystem.context.lineTo(positions[index].x - l + s, positions[index].y - l / 2);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "hexagons") {
+            particleSystem.context.beginPath();
+            let r = 2 * particleSystem.shape.length / Math.sqrt(3) || 20 / Math.sqrt(3);
+            particleSystem.context.moveTo(positions[index].x - r, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x - r / 2, positions[index].y - r);
+            particleSystem.context.lineTo(positions[index].x + r / 2, positions[index].y - r);
+            particleSystem.context.lineTo(positions[index].x + r, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x + r / 2, positions[index].y + r);
+            particleSystem.context.lineTo(positions[index].x - r / 2, positions[index].y + r);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "pentagons") {
+            particleSystem.context.beginPath();
+            let l = particleSystem.shape.length || 20;
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x + l * Math.sqrt(3) / 2, positions[index].y - l / 2);
+            particleSystem.context.lineTo(positions[index].x + l / 2, positions[index].y + l / 2);
+            particleSystem.context.lineTo(positions[index].x - l / 2, positions[index].y + l / 2);
+            particleSystem.context.lineTo(positions[index].x - l * Math.sqrt(3) / 2, positions[index].y - l / 2);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "circles") {
+            particleSystem.context.beginPath();
+            particleSystem.context.arc(positions[index].x, positions[index].y, particleSystem.shape.length || 20, 0, 2 * Math.PI, true);
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "unknown") {
+            particleSystem.context.beginPath();
+            let sr = 2 * particleSystem.shape.length / 3 || 60 / 3;
+            let ps = 2 * sr / 2 * 0.5877852523;
+            let s = Math.sqrt(4 * sr * sr + ps * ps) / 2;
+            let h = Math.sqrt(sr * sr / 2 - ps * ps) / 2;
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - 3 * sr / 2);
+            particleSystem.context.lineTo(positions[index].x - sr / 3, positions[index].y - sr / 2);
+            particleSystem.context.lineTo(positions[index].x - sr / 3 + s, positions[index].y + sr / 2);
+            particleSystem.context.lineTo(positions[index].x - s + sr / 6, positions[index].y - sr / 2 + h);
+            particleSystem.context.lineTo(positions[index].x - s / 2 + sr / 6, positions[index].y - sr / 2 + 2 * h);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y - 3 * sr / 2 + 2 * h);
+            particleSystem.context.lineTo(positions[index].x + s / 2 - sr / 6, positions[index].y - sr / 2 + 2 * h);
+            particleSystem.context.lineTo(positions[index].x + s - sr / 6, positions[index].y - sr / 2 + h);
+            particleSystem.context.lineTo(positions[index].x + sr / 3 - s, positions[index].y + sr / 2);
+            particleSystem.context.lineTo(positions[index].x + sr / 3, positions[index].y - sr / 2);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "unknown2") {
+            particleSystem.context.beginPath();
+            let l = particleSystem.shape.length || 20;
+            let s = l / Math.sqrt(3);
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x + l - s, positions[index].y - l + s);
+            particleSystem.context.lineTo(positions[index].x + l, positions[index].y - l + s);
+            particleSystem.context.lineTo(positions[index].x + l - s / 2, positions[index].y + l - s);
+            particleSystem.context.lineTo(positions[index].x + l, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y - l / 2);
+            particleSystem.context.lineTo(positions[index].x - l, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x - l + s / 2, positions[index].y + l - s);
+            particleSystem.context.lineTo(positions[index].x - l, positions[index].y - l + s);
+            particleSystem.context.lineTo(positions[index].x - l + s, positions[index].y - l + s);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
         } else {
             particleSystem.context.beginPath();
-            particleSystem.context.arc(
-                positions[index].x,
-                positions[index].y,
-                sizes[index],
-                0,
-                2 * Math.PI,
-                true
-            );
+            particleSystem.context.arc(positions[index].x, positions[index].y, sizes[index], 0, 2 * Math.PI, true);
             particleSystem.context.fill();
         }
     },
@@ -250,3 +313,4 @@ const Particles = {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 };
+
