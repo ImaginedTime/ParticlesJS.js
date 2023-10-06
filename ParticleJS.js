@@ -95,229 +95,202 @@ const Particles = {
 			}
 		};
 
-		Particles.drawLines(Variables, PosList);
-		Particles.draw(Variables, PosList, SizeList);
-	},
+        Particles.drawLines(particleSystem, positions);
+        Particles.draw(particleSystem, positions, sizes);
+    },
+    collide: (positions, directions, minX, minY, maxX, maxY, index) => {
+        if (positions[index].x < minX) {
+            positions[index].x = minX;
+            directions[index].x *= -1;
+        }
+        if (positions[index].y < minY) {
+            positions[index].y = minY;
+            directions[index].y *= -1;
+        }
+        if (positions[index].x > maxX) {
+            positions[index].x = maxX;
+            directions[index].x *= -1;
+        }
+        if (positions[index].y > maxY) {
+            positions[index].y = maxY;
+            directions[index].y *= -1;
+        }
 
-	collide: (PosList, DirList, x1, y1, x2, y2, i) => {
-		if(PosList[i].x < x1)
-		{
-			PosList[i].x = x1;
-			DirList[i].x *= -1;
-		}
-		if(PosList[i].y < y1)
-		{
-			PosList[i].y = y1;
-			DirList[i].y *= -1;
-		}
-		if(PosList[i].x > x2)
-		{
-			PosList[i].x = x2;
-			DirList[i].x *= -1;
-		}
-		if(PosList[i].y > y2)
-		{
-			PosList[i].y = y2;
-			DirList[i].y *= -1;
-		}
+        return [positions[index], directions[index]];
+    },
+    draw: (particleSystem, positions, sizes) => {
+        if (particleSystem.particleOpacity !== "random") {
+            particleSystem.context.fillStyle = particleSystem.particleColor.replace("b", "ba").replace(")", "," + particleSystem.particleOpacity + ")");
+        }
+        for (let i = 0; i < particleSystem.maxParticles; i++) {
+            if (particleSystem.particleOpacity === "random") {
+                particleSystem.context.fillStyle = particleSystem.particleColor.replace("b", "ba").replace(")", "," + particleSystem.opacityValues[i] + ")");
+            }
+            if (particleSystem.image) {
+                Particles.drawImage(particleSystem, positions, i);
+            } else {
+                Particles.drawShapes(particleSystem, positions, sizes, i);
+            }
+        }
+    },
+    drawLines: (particleSystem, positions) => {
+        if (particleSystem.connectParticles) {
+            for (const pos of positions) {
+                for (const pos2 of positions) {
+                    if (particleSystem.particleColor && Particles.distance(pos.x, pos.y, pos2.x, pos2.y) < particleSystem.minDistance) {
+                        let opacity = 1 - Particles.distance(pos.x, pos.y, pos2.x, pos2.y) / particleSystem.minDistance;
+                        opacity = Math.round((opacity + Number.EPSILON) * 100) / 100;
+                        particleSystem.context.strokeStyle = particleSystem.particleColor.replace("b", "ba").replace(")", "," + opacity + ")");
+                        particleSystem.context.beginPath();
+                        particleSystem.context.moveTo(pos.x, pos.y);
+                        particleSystem.context.lineTo(pos2.x, pos2.y);
+                        particleSystem.context.stroke();
+                    }
+                }
+            }
+        }
+    },
+    drawImage: (particleSystem, positions, index) => {
+        particleSystem.context.drawImage(
+            particleSystem.imageDraw,
+            positions[index].x - particleSystem.image.sizeX / 2,
+            positions[index].y - particleSystem.image.sizeY / 2,
+            particleSystem.image.sizeX,
+            particleSystem.image.sizeY
+        );
+    },
+    drawShapes: (particleSystem, positions, sizes, index) => {
+        if (particleSystem.shape.name == "6-stars") {
+            particleSystem.context.beginPath();
+            let h = particleSystem.shape.length / 2 || 10;
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - 2 * h);
+            particleSystem.context.lineTo(positions[index].x + 2 * h / 3, positions[index].y - h);
+            particleSystem.context.lineTo(positions[index].x + 2 * h, positions[index].y - h);
+            particleSystem.context.lineTo(positions[index].x + 4 * h / 3, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x + 2 * h, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x + 2 * h / 3, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y + 2 * h);
+            particleSystem.context.lineTo(positions[index].x - 2 * h / 3, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x - 2 * h, positions[index].y + h);
+            particleSystem.context.lineTo(positions[index].x - 4 * h / 3, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x - 2 * h, positions[index].y - h);
+            particleSystem.context.lineTo(positions[index].x - 2 * h / 3, positions[index].y - h);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "5-stars") {
+            particleSystem.context.beginPath();
+            let l = particleSystem.shape.length || 20;
+            let s = l / Math.sqrt(3);
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x + l - s, positions[index].y - l / 2);
+            particleSystem.context.lineTo(positions[index].x + l, positions[index].y - l / 3);
+            particleSystem.context.lineTo(positions[index].x + l - s / 2, positions[index].y + l / 4);
+            particleSystem.context.lineTo(positions[index].x + 2 * l / 3, positions[index].y + 4 * l / 5);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y + l / 2);
+            particleSystem.context.lineTo(positions[index].x - 2 * l / 3, positions[index].y + 4 * l / 5);
+            particleSystem.context.lineTo(positions[index].x - l + s / 2, positions[index].y + l / 4);
+            particleSystem.context.lineTo(positions[index].x - l, positions[index].y - l / 3);
+            particleSystem.context.lineTo(positions[index].x - l + s, positions[index].y - l / 2);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "hexagons") {
+            particleSystem.context.beginPath();
+            let r = 2 * particleSystem.shape.length / Math.sqrt(3) || 20 / Math.sqrt(3);
+            particleSystem.context.moveTo(positions[index].x - r, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x - r / 2, positions[index].y - r);
+            particleSystem.context.lineTo(positions[index].x + r / 2, positions[index].y - r);
+            particleSystem.context.lineTo(positions[index].x + r, positions[index].y);
+            particleSystem.context.lineTo(positions[index].x + r / 2, positions[index].y + r);
+            particleSystem.context.lineTo(positions[index].x - r / 2, positions[index].y + r);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "pentagons") {
+            particleSystem.context.beginPath();
+            let l = particleSystem.shape.length || 20;
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x + l * Math.sqrt(3) / 2, positions[index].y - l / 2);
+            particleSystem.context.lineTo(positions[index].x + l / 2, positions[index].y + l / 2);
+            particleSystem.context.lineTo(positions[index].x - l / 2, positions[index].y + l / 2);
+            particleSystem.context.lineTo(positions[index].x - l * Math.sqrt(3) / 2, positions[index].y - l / 2);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "circles") {
+            particleSystem.context.beginPath();
+            particleSystem.context.arc(positions[index].x, positions[index].y, particleSystem.shape.length || 20, 0, 2 * Math.PI, true);
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "unknown") {
+            particleSystem.context.beginPath();
+            let sr = 2 * particleSystem.shape.length / 3 || 60 / 3;
+            let ps = 2 * sr / 2 * 0.5877852523;
+            let s = Math.sqrt(4 * sr * sr + ps * ps) / 2;
+            let h = Math.sqrt(sr * sr / 2 - ps * ps) / 2;
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - 3 * sr / 2);
+            particleSystem.context.lineTo(positions[index].x - sr / 3, positions[index].y - sr / 2);
+            particleSystem.context.lineTo(positions[index].x - sr / 3 + s, positions[index].y + sr / 2);
+            particleSystem.context.lineTo(positions[index].x - s + sr / 6, positions[index].y - sr / 2 + h);
+            particleSystem.context.lineTo(positions[index].x - s / 2 + sr / 6, positions[index].y - sr / 2 + 2 * h);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y - 3 * sr / 2 + 2 * h);
+            particleSystem.context.lineTo(positions[index].x + s / 2 - sr / 6, positions[index].y - sr / 2 + 2 * h);
+            particleSystem.context.lineTo(positions[index].x + s - sr / 6, positions[index].y - sr / 2 + h);
+            particleSystem.context.lineTo(positions[index].x + sr / 3 - s, positions[index].y + sr / 2);
+            particleSystem.context.lineTo(positions[index].x + sr / 3, positions[index].y - sr / 2);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else if (particleSystem.shape.name == "unknown2") {
+            particleSystem.context.beginPath();
+            let l = particleSystem.shape.length || 20;
+            let s = l / Math.sqrt(3);
+            particleSystem.context.moveTo(positions[index].x, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x + l - s, positions[index].y - l + s);
+            particleSystem.context.lineTo(positions[index].x + l, positions[index].y - l + s);
+            particleSystem.context.lineTo(positions[index].x + l - s / 2, positions[index].y + l - s);
+            particleSystem.context.lineTo(positions[index].x + l, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x, positions[index].y - l / 2);
+            particleSystem.context.lineTo(positions[index].x - l, positions[index].y - l);
+            particleSystem.context.lineTo(positions[index].x - l + s / 2, positions[index].y + l - s);
+            particleSystem.context.lineTo(positions[index].x - l, positions[index].y - l + s);
+            particleSystem.context.lineTo(positions[index].x - l + s, positions[index].y - l + s);
+            particleSystem.context.closePath();
+            particleSystem.context.fill();
+        } else {
+            particleSystem.context.beginPath();
+            particleSystem.context.arc(positions[index].x, positions[index].y, sizes[index], 0, 2 * Math.PI, true);
+            particleSystem.context.fill();
+        }
+    },
+    adjustCanvas: (particleSystem) => {
+        const canvas = particleSystem.canvas;
+        if (particleSystem.fullScreen) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        if (particleSystem.screenSize !== null) {
+            canvas.width = particleSystem.screenSize.width;
+            canvas.height = particleSystem.screenSize.height;
+        }
 
-		return [PosList[i], DirList[i]];
-	},
+        const ctx = particleSystem.context;
+        ctx.fillStyle = particleSystem.backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    },
+    randomPosGen: (canvas) => {
+        return { x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height) };
+    },
+    randomDirGen: () => {
+        return { x: Math.random() > 0.5 ? -1 : 1, y: Math.random() > 0.5 ? -1 : 1 };
+    },
+    randomSizeGen: (minSize, sizeV) => {
+        return minSize + Math.floor(Math.random() * sizeV);
+    },
+    randomOpacitygen: (maxParticles) => {
+        const ops = [];
+        for (let i = 0; i < maxParticles; i++) {
+            ops.push(0.1 + Math.random() * 0.7);
+        }
+        return ops;
+    },
+    distance: (x1, y1, x2, y2) => {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+};
 
-	draw: (Variables, PosList, SizeList) => {
-		if(Variables.opacity != "random")
-			Variables.ct.fillStyle = Variables.color.replace("b", "ba").replace(")", "," + Variables.opacity + ")");
-		for(let i = 0; i < Variables.maxP; i++)
-		{
-			if(Variables.opacity == "random")
-				Variables.ct.fillStyle = Variables.color.replace("b", "ba").replace(")", "," + Variables.ops[i] + ")");
-			
-			if(Variables.image)
-				Particles.drawImage(Variables, PosList, i);
-			else
-				Particles.drawShapes(Variables, PosList, SizeList, i);
-		}
-	},
-	drawLines : (Variables, PosList) => {
-		if(Variables.connectP)
-		{
-			for(pos of PosList)
-			{
-				for(pos2 of PosList)
-				{
-					if(Particles.distance(pos.x, pos.y, pos2.x, pos2.y) < Variables.minD)
-					{
-						let opacity = 1 - Particles.distance(pos.x, pos.y, pos2.x, pos2.y) / Variables.minD;
-						opacity = Math.round((opacity + Number.EPSILON) * 100) / 100;
-						Variables.ct.strokeStyle = Variables.color.replace("b", "ba").replace(")", "," + opacity + ")");
-						Variables.ct.beginPath();
-						Variables.ct.moveTo(pos.x, pos.y);
-						Variables.ct.lineTo(pos2.x, pos2.y);
-						Variables.ct.stroke();
-					}
-				}
-			}
-
-		}
-	},
-
-	drawImage: (Variables, PosList, i) => {
-		Variables.ct.drawImage(Variables.imageDraw, 
-			PosList[i].x - Variables.image.sizeX/2, 
-			PosList[i].y - Variables.image.sizeY/2, 
-			Variables.image.sizeX, 
-			Variables.image.sizeY);
-	},
-
-	drawShapes: (Variables, PosList, SizeList, i) => {
-		if(Variables.shape.name == "6-stars")
-		{
-			Variables.ct.beginPath();
-			let h = Variables.shape.length / 2 || 10;
-			Variables.ct.moveTo( PosList[i].x         , PosList[i].y - 2 * h );
-			Variables.ct.lineTo( PosList[i].x + 2*h/3 , PosList[i].y - h     );
-			Variables.ct.lineTo( PosList[i].x + 2*h   , PosList[i].y - h     );
-			Variables.ct.lineTo( PosList[i].x + 4*h/3 , PosList[i].y         );
-			Variables.ct.lineTo( PosList[i].x + 2*h   , PosList[i].y + h     );
-			Variables.ct.lineTo( PosList[i].x + 2*h/3 , PosList[i].y + h     );
-			Variables.ct.lineTo( PosList[i].x         , PosList[i].y + 2*h   );
-			Variables.ct.lineTo( PosList[i].x - 2*h/3 , PosList[i].y + h     );
-			Variables.ct.lineTo( PosList[i].x - 2*h   , PosList[i].y + h     );
-			Variables.ct.lineTo( PosList[i].x - 4*h/3 , PosList[i].y         );
-			Variables.ct.lineTo( PosList[i].x - 2*h   , PosList[i].y - h     );
-			Variables.ct.lineTo( PosList[i].x - 2*h/3 , PosList[i].y - h     );
-			Variables.ct.closePath();
-			Variables.ct.fill()
-		}
-		else if(Variables.shape.name == "5-stars")
-		{
-			Variables.ct.beginPath();
-			let l = Variables.shape.length || 20;
-			let s = l / Math.sqrt(3);
-			Variables.ct.moveTo(PosList[i].x           , PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x + l - s   , PosList[i].y - l/2);
-			Variables.ct.lineTo(PosList[i].x + l       , PosList[i].y - l/3);
-			Variables.ct.lineTo(PosList[i].x + l - s/2 , PosList[i].y + l/4);
-			Variables.ct.lineTo(PosList[i].x + 2*l/3   , PosList[i].y + 4*l/5);
-			Variables.ct.lineTo(PosList[i].x           , PosList[i].y + l/2);
-			Variables.ct.lineTo(PosList[i].x - 2*l/3   , PosList[i].y + 4*l/5);
-			Variables.ct.lineTo(PosList[i].x -l + s/2  , PosList[i].y + l/4);
-			Variables.ct.lineTo(PosList[i].x - l       , PosList[i].y - l/3);
-			Variables.ct.lineTo(PosList[i].x - l + s   , PosList[i].y - l/2);
-			Variables.ct.closePath();
-			Variables.ct.fill();
-		}
-		else if(Variables.shape.name == "hexagons")
-		{
-			Variables.ct.beginPath();
-			let r = 2 * Variables.shape.length / Math.sqrt(3) || 20 / Math.sqrt(3);
-			Variables.ct.moveTo(PosList[i].x - r   , PosList[i].y);
-			Variables.ct.lineTo(PosList[i].x - r/2 , PosList[i].y - r);
-			Variables.ct.lineTo(PosList[i].x + r/2 , PosList[i].y - r);
-			Variables.ct.lineTo(PosList[i].x + r   , PosList[i].y);
-			Variables.ct.lineTo(PosList[i].x + r/2 , PosList[i].y + r);
-			Variables.ct.lineTo(PosList[i].x - r/2 , PosList[i].y + r);
-			Variables.ct.closePath();
-			Variables.ct.fill();
-		}
-		else if(Variables.shape.name == "pentagons")
-		{
-			Variables.ct.beginPath();
-			let l = Variables.shape.length || 20;
-			Variables.ct.moveTo(PosList[i].x                    , PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x + l*Math.sqrt(3)/2 , PosList[i].y - l/2);
-			Variables.ct.lineTo(PosList[i].x + l/2              , PosList[i].y + l/2);
-			Variables.ct.lineTo(PosList[i].x - l/2              , PosList[i].y + l/2);
-			Variables.ct.lineTo(PosList[i].x - l*Math.sqrt(3)/2 , PosList[i].y - l/2);
-			Variables.ct.closePath();
-			Variables.ct.fill();
-		}
-		else if(Variables.shape.name == "circles")
-		{
-			Variables.ct.beginPath();
-			Variables.ct.arc(PosList[i].x, PosList[i].y, Variables.shape.length || 20, 0, 2*Math.PI, true);
-			Variables.ct.fill();
-		}
-		else if(Variables.shape.name == "unknown")
-		{
-			Variables.ct.beginPath();
-			let sr = 2 * Variables.shape.length / 3 || 60 / 3;
-			let ps = 2 * sr/2 * 0.5877852523;
-			let s = Math.sqrt(4 * sr*sr + ps*ps) / 2;
-			let h = Math.sqrt(sr*sr / 2 - ps*ps) / 2;
-			Variables.ct.moveTo(PosList[i].x              , PosList[i].y - 3*sr/2);
-			Variables.ct.lineTo(PosList[i].x - sr/3       , PosList[i].y - sr/2);
-			Variables.ct.lineTo(PosList[i].x - sr/3 + s   , PosList[i].y + sr/2);
-			Variables.ct.lineTo(PosList[i].x - s + sr/6   , PosList[i].y - sr/2 + h);
-			Variables.ct.lineTo(PosList[i].x - s/2 + sr/6 , PosList[i].y - sr/2 + 2*h);
-			Variables.ct.lineTo(PosList[i].x              , PosList[i].y - 3*sr/2 + 2*h);
-			Variables.ct.lineTo(PosList[i].x + s/2 - sr/6 , PosList[i].y - sr/2 + 2*h);
-			Variables.ct.lineTo(PosList[i].x + s - sr/6   , PosList[i].y - sr/2 + h);
-			Variables.ct.lineTo(PosList[i].x + sr/3 - s   , PosList[i].y + sr/2);
-			Variables.ct.lineTo(PosList[i].x + sr/3       , PosList[i].y - sr/2);
-			Variables.ct.closePath();
-			Variables.ct.fill();
-		}
-		else if(Variables.shape.name == "unknown2")
-		{
-			Variables.ct.beginPath();
-			let l = Variables.shape.length || 20;
-			let s = l / Math.sqrt(3);
-			Variables.ct.moveTo(PosList[i].x           , PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x + l - s   , PosList[i].y - l + s);
-			Variables.ct.lineTo(PosList[i].x + l       , PosList[i].y - l + s);
-			Variables.ct.lineTo(PosList[i].x + l - s/2 , PosList[i].y + l - s);
-			Variables.ct.lineTo(PosList[i].x + l       , PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x           , PosList[i].y - l/2);
-			Variables.ct.lineTo(PosList[i].x - l       , PosList[i].y - l);
-			Variables.ct.lineTo(PosList[i].x -l + s/2  , PosList[i].y + l - s);
-			Variables.ct.lineTo(PosList[i].x - l       , PosList[i].y - l + s);
-			Variables.ct.lineTo(PosList[i].x - l + s   , PosList[i].y - l + s);
-			Variables.ct.closePath();
-			Variables.ct.fill();
-		}
-		else		
-		{
-			Variables.ct.beginPath();
-			Variables.ct.arc(PosList[i].x, PosList[i].y, SizeList[i], 0, 2*Math.PI, true);
-			Variables.ct.fill();
-		}
-	},
-
-	adjustCanvas: (Variables) => {
-		if(Variables.fullScreen){
-			Variables.cv.width = window.innerWidth;
-			Variables.cv.height = window.innerHeight;
-		}
-		if(Variables.screenSize != null){
-			Variables.cv.width = Variables.screenSize.width;
-			Variables.cv.height = Variables.screenSize.height;
-		}
-
-		Variables.ct.fillStyle = Variables.background;
-		Variables.ct.fillRect(0,0, Variables.cv.width, Variables.cv.height);
-	},
-
-	randomPosGen: (cv) => {
-		return {x: Math.floor(Math.random() * cv.width), y: Math.floor(Math.random() * cv.height)};
-	},
-
-	randomDirGen: () => {
-		return {x: Math.random() > 0.5 ? -1: 1, y: Math.random() > 0.5 ? -1: 1};
-	},
-
-	randomSizeGen: (minSize, sizeV) => {
-		return minSize + Math.floor(Math.random() * sizeV);
-	},
-
-	randomOpacitygen: (maxP) => {
-		ops = [];
-		for (var i = 0; i < maxP; i++) 
-			ops.push(0.1 + Math.random() * 0.7);
-		return ops;
-	},
-
-	distance: (x1, y1, x2, y2) => {
-		return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-	}
-}

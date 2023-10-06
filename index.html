@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Particles Js</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<canvas id="cv"></canvas>
+	<script type="text/javascript" src="ParticleJS.js"></script>
+	<script type="text/javascript">
+		window.onload = function () {
+			Particles.init({
+				selector: "#cv",
+				connectParticles: true,
+				maxParticles: 200,
+				minDistance: 120,
+				speed: 0.5,
+				color: "rgb(230,230,230)",
+				background: "rgb(220,10, 20)",
+				sizeVariation: 5,
+				opacity: "random",
+				fullScreen: true,
+				mouseCollide: true,
+				mouseCollideRange: 75,
+			});
+		};
+	</script>
+
+</body>
+
+</html>
