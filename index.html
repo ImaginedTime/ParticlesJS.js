@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Particles Js</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<canvas id="cv"></canvas>
+	<script type="text/javascript" src="ParticleJS.js"></script>
+	<script type="text/javascript">
+		window.onload = function () {
+			Particles.init({
+				selector: "#cv",
+				connectParticles: true,
+				maxParticles: 200,
+				minDistance: 120,
+				speed: 0.5,
+				color: "rgb(230,230,230)",
+				background: "rgb(220,10, 20)",
+				sizeVariation: 5,
+				opacity: "random",
+				fullScreen: true,
+				mouseCollide: true,
+				mouseCollideRange: 75,
+			});
+		};
+	</script>
+
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="/__/firebase/8.6.7/firebase-app.js"></script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="/__/firebase/8.6.7/firebase-analytics.js"></script>
+
+	<!-- Initialize Firebase -->
+	<script src="/__/firebase/init.js"></script>
+</body>
+
+</html>
