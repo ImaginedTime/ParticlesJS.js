@@ -1,99 +1,119 @@
 const Particles = {
-	init: (props) => {
-		const Variables = {};
-		const tempCnvses = document.querySelectorAll(props.selector);
+    init: (config) => {
+        const particleSystem = {};
 
-		Variables.cv = tempCnvses[tempCnvses.length - 1];
-		Variables.ct = Variables.cv.getContext("2d");
+        // Canvas setup
+        particleSystem.canvas = document.querySelector(config.selector);
+        particleSystem.context = particleSystem.canvas.getContext("2d");
 
-		Variables.maxP = props.maxParticles || 200;
-		Variables.minD = props.minDistance || 120;
-		Variables.color = props.color || "#000";
-		Variables.speed = props.speed || 0.5;
-		Variables.sizeV = props.sizeVariation || 5;
-		Variables.connectP = props.connectParticles || true;
-		Variables.opacity = props.opacity || 0.7;
-		Variables.background = props.background || "white";
-		Variables.fullScreen = props.fullScreen || false;
-		Variables.screenSize = props.screenSize || (Variables.fullScreen ? null : {width: 200, height: 200});
-		Variables.mouseCollide = props.mouseCollide || false;
-		Variables.mouseCollideRange = props.mouseCollideRange || 100;
-		Variables.image = props.image || false;
-		Variables.shape = props.shape || false;
-		Variables.ops = [];
+        // Particle system configuration
+        particleSystem.maxParticles = config.maxParticles || 200;
+        particleSystem.minDistance = config.minDistance || 120;
+        particleSystem.particleColor = config.color || "rgb(230, 230, 230)";
+        particleSystem.particleSpeed = config.speed || 0.5;
+        particleSystem.sizeVariation = config.sizeVariation || 5;
+        particleSystem.connectParticles = config.connectParticles || true;
+        particleSystem.particleOpacity = config.opacity || "random";
+        particleSystem.backgroundColor = config.background || "rgb(220, 10, 20)";
+        particleSystem.fullScreen = config.fullScreen || true;
+        particleSystem.screenSize = config.screenSize || (particleSystem.fullScreen ? null : { width: window.innerWidth, height: window.innerHeight });
+        particleSystem.mouseCollide = config.mouseCollide || true;
+        particleSystem.mouseCollideRange = config.mouseCollideRange || 75;
+        particleSystem.image = config.image || false;
+        particleSystem.shape = config.shape || false;
+        particleSystem.opacityValues = [];
 
-		if(Variables.opacity == "random")
-			Variables.ops = Particles.randomOpacitygen(Variables.maxP);
+        if (particleSystem.particleOpacity === "random") {
+            particleSystem.opacityValues = Particles.randomOpacitygen(particleSystem.maxParticles);
+        }
 
-		Particles.create(Variables);
-	},
+        Particles.create(particleSystem);
+    },
+    create: (particleSystem) => {
+        Particles.adjustCanvas(particleSystem);
 
-	create: (Variables) => {
-		Particles.adjustCanvas(Variables);
+        const positions = [];
+        const directions = [];
+        const sizes = [];
 
-		let PosList = [], DirList = [], SizeList = [];
+        for (let i = 0; i < particleSystem.maxParticles; i++) {
+            positions.push(Particles.randomPosGen(particleSystem.canvas));
+            directions.push(Particles.randomDirGen());
+            sizes.push(Particles.randomSizeGen(2, particleSystem.sizeVariation));
+        }
 
-		for (var i = 0; i < Variables.maxP; i++) 
-		{
-			PosList.push(Particles.randomPosGen(Variables.cv))
-			DirList.push(Particles.randomDirGen())
-			SizeList.push(Particles.randomSizeGen(2, Variables.sizeV))
-		}
+        if (particleSystem.image) {
+            particleSystem.imageDraw = new Image();
+            particleSystem.imageDraw.src = particleSystem.image.src;
+        }
+        setInterval(Particles.update, 20, particleSystem, positions, directions, sizes);
+    },
+    update: (particleSystem, positions, directions, sizes) => {
+        Particles.adjustCanvas(particleSystem);
 
-		if(Variables.image)
-		{
-			Variables.imageDraw = new Image();
-			Variables.imageDraw.src = Variables.image.src;
-		}
-		setInterval(Particles.update, 20, Variables, PosList, DirList, SizeList);
-	},
+        for (let i = 0; i < positions.length; i++) {
+            positions[i].x += particleSystem.particleSpeed * directions[i].x;
+            positions[i].y += particleSystem.particleSpeed * directions[i].y;
 
-	update: (Variables, PosList, DirList, SizeList) => {
-		Particles.adjustCanvas(Variables);
+            if (particleSystem.shape) {
+                [positions[i], directions[i]] = Particles.collide(
+                    positions,
+                    directions,
+                    particleSystem.shape.length,
+                    particleSystem.shape.length,
+                    particleSystem.canvas.width - particleSystem.shape.length,
+                    particleSystem.canvas.height - particleSystem.shape.length / 2,
+                    i
+                );
+            } else if (particleSystem.image) {
+                [positions[i], directions[i]] = Particles.collide(
+                    positions,
+                    directions,
+                    particleSystem.image.sizeX / 2,
+                    particleSystem.image.sizeY / 2,
+                    particleSystem.canvas.width - particleSystem.image.sizeX / 2,
+                    particleSystem.canvas.height - particleSystem.image.sizeY / 2,
+                    i
+                );
+            } else {
+                [positions[i], directions[i]] = Particles.collide(
+                    positions,
+                    directions,
+                    sizes[i],
+                    sizes[i],
+                    particleSystem.canvas.width - sizes[i],
+                    particleSystem.canvas.height - sizes[i],
+                    i
+                );
+            }
+        }
 
-		for (var i = 0; i < PosList.length; i++) 
-		{
-			PosList[i].x += Variables.speed * DirList[i].x;
-			PosList[i].y += Variables.speed * DirList[i].y;
+        particleSystem.canvas.onmousemove = (e) => {
+            console.log("Mouse moved:", e.clientX, e.clientY);
 
-			if(Variables.shape)
-				[PosList[i], DirList[i]] = 
-					Particles.collide(PosList, DirList, Variables.shape.length, Variables.shape.length, 
-						Variables.cv.width - Variables.shape.length, Variables.cv.height - Variables.shape.length/2, i)
-			else if(Variables.image)
-				[PosList[i], DirList[i]] =
-					Particles.collide(PosList, DirList, Variables.image.sizeX/2, Variables.image.sizeY/2, 
-						Variables.cv.width - Variables.image.sizeX/2, Variables.cv.height - Variables.image.sizeY/2, i);
-			else
-				[PosList[i], DirList[i]] =
-					Particles.collide(PosList, DirList, SizeList[i], SizeList[i], 
-						Variables.cv.width - SizeList[i], Variables.cv.height - SizeList[i], i)
-		}
+            if (particleSystem.mouseCollide) {
+                for (let i = 0; i < positions.length; i++) {
+                    const mouseX = e.clientX; // Update mouse cursor position
+                    const mouseY = e.clientY;
 
-		Variables.cv.onmousemove = (e) => {
-			if(Variables.mouseCollide)
-			{
-				for (var i = 0; i < PosList.length; i++) 
-				{
-					if(Particles.distance(PosList[i].x, PosList[i].y, e.x, e.y) < Variables.mouseCollideRange)
-					{
-						while(Particles.distance(PosList[i].x, PosList[i].y, e.x, e.y) < Variables.mouseCollideRange)
-						{
-							if(PosList[i].x > 0 && PosList[i].y > 0 && PosList[i].x < Variables.cv.width && PosList[i].y < Variables.cv.height)
-							{
-								PosList[i].x += DirList[i].x;
-								PosList[i].y += DirList[i].y;
-							}
-							else 
-							{
-								DirList[i] = Particles.randomDirGen()
-								break;
-							}
-						}
-					}
-				}
-			}
-		};
+                    // Check if a particle (positions[i]) is within the range of the mouse cursor (mouseX, mouseY)
+                    if (Particles.distance(positions[i].x, positions[i].y, mouseX, mouseY) < particleSystem.mouseCollideRange) {
+                        console.log("Collision detected for particle", i);
+
+                        // Handle collision here
+                        while (Particles.distance(positions[i].x, positions[i].y, mouseX, mouseY) < particleSystem.mouseCollideRange) {
+                            if (positions[i].x > 0 && positions[i].y > 0 && positions[i].x < particleSystem.canvas.width && positions[i].y < particleSystem.canvas.height) {
+                                positions[i].x += directions[i].x;
+                                positions[i].y += directions[i].y;
+                            } else {
+                                directions[i] = Particles.randomDirGen();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        };
 
         Particles.drawLines(particleSystem, positions);
         Particles.draw(particleSystem, positions, sizes);
@@ -293,4 +313,3 @@ const Particles = {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 };
-
